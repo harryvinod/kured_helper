@@ -1,0 +1,37 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kured-daemonset-reader
+rules:
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs: ["list", "patch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "patch"]
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kured-daemonset-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: kured
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: kured-daemonset-reader
+  apiGroup: rbac.authorization.k8s.io
